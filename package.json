@@ -21,6 +21,10 @@
     "start:backend": "npm run start --prefix backend",
     "start": "npm run start --prefix backend"
   },
+  "dependencies": {
+    "@types/node": "^20.14.2",
+    "typescript": "^5.4.5"
+  },
   "devDependencies": {
     "concurrently": "^8.2.2"
   }
