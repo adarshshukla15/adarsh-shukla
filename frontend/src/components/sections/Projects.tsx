@@ -1,19 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useProjects } from '../../hooks/useProjects';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiGithub, FiExternalLink, FiArrowRight } from 'react-icons/fi';
-import { getProjects, Project } from '../../api';
-import { Link } from 'react-router-dom';
 
 export default function ProjectsSection() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    getProjects().then((data) => {
-      setProjects(data);
-      setIsLoading(false);
-    });
-  }, []);
+  const { projects, loading: isLoading, error, refetch } = useProjects();
 
   return (
     <section className="relative py-24 px-6 md:px-12 bg-black">
@@ -41,7 +32,25 @@ export default function ProjectsSection() {
         </div>
 
         {/* Projects Layout */}
-        {isLoading ? (
+        {error ? (
+          <div className="flex flex-col items-center justify-center py-16 text-center w-full">
+            <div className="rounded-full bg-red-500/10 border border-red-500/20 p-4 text-red-500 mb-4">
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-bold text-white mb-2">{error}</h2>
+            <p className="text-sm text-neutral-400 max-w-sm mb-6">
+              There was a problem loading the featured projects. Please check your internet or retry below.
+            </p>
+            <button
+              onClick={refetch}
+              className="rounded-xl bg-cyan-500 px-6 py-3 text-xs font-bold uppercase tracking-wider text-black hover:bg-cyan-400 transition-colors shadow-lg shadow-cyan-500/10"
+            >
+              Retry Connection
+            </button>
+          </div>
+        ) : isLoading ? (
           <div className="space-y-12">
             {[1, 2].map((i) => (
               <div key={i} className="h-[400px] rounded-3xl bg-white/[0.01] border border-white/5 animate-pulse" />

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FiMail, FiSend, FiArrowRight, FiGithub, FiTwitter, FiLinkedin, FiInstagram } from 'react-icons/fi';
 import MagneticButton from '../buttons/MagneticButton';
-import { getSettings } from '../../../api';
+import { getSettings, subscribeNewsletter } from '../../../api';
 
 export default function Footer() {
   const [email, setEmail] = useState('');
@@ -22,13 +22,8 @@ export default function Footer() {
 
     setStatus('loading');
     try {
-      const res = await fetch('/api/newsletter', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
-      const data = await res.json();
-      if (res.ok) {
+      const data = await subscribeNewsletter(email);
+      if (data.success) {
         setStatus('success');
         setMessage(data.message || 'Successfully subscribed!');
         setEmail('');
@@ -36,10 +31,10 @@ export default function Footer() {
         setStatus('error');
         setMessage(data.message || 'Subscription failed. Try again.');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       setStatus('error');
-      setMessage('Network error. Please try again.');
+      setMessage(err.response?.data?.message || 'Network error. Please try again.');
     }
   };
 

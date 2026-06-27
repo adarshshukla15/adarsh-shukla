@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { authService } from '../services/auth.service';
+
 
 interface User {
   id: string;
@@ -54,12 +56,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     try {
       set({ isLoading: true });
-      const response = await fetch('/api/me', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      const data = await response.json();
+      const data = await authService.getMe();
       if (data.success) {
         set({ user: data.user, isAuthenticated: true, isLoading: false });
         localStorage.setItem('a3_admin_user', JSON.stringify(data.user));
@@ -71,6 +68,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       }
     } catch (err) {
       console.error('Check auth failed:', err);
+      get().logout();
       set({ isLoading: false });
       return false;
     }

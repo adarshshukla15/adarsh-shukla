@@ -147,7 +147,7 @@ export const sendAdminInquiry = async (data: {
         </div>
 
         <div style="text-align: center; margin-top: 35px; border-top: 1px solid #1a1a24; padding-top: 20px;">
-          <a href="https://a3services.in.netlify.app/admin" style="display: inline-block; background: linear-gradient(135deg, #00d2ff 0%, #0066ff 100%); color: #ffffff; text-decoration: none; padding: 12px 30px; font-size: 13px; font-weight: bold; border-radius: 30px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(0, 210, 255, 0.2);">
+          <a href="https://a3servicesin.netlify.app/admin" style="display: inline-block; background: linear-gradient(135deg, #00d2ff 0%, #0066ff 100%); color: #ffffff; text-decoration: none; padding: 12px 30px; font-size: 13px; font-weight: bold; border-radius: 30px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(0, 210, 255, 0.2);">
             Open Admin Dashboard
           </a>
         </div>
@@ -226,7 +226,7 @@ export const sendCustomerConfirmation = async (data: {
         </div>
 
         <div style="text-align: center; margin-top: 30px; padding-bottom: 20px;">
-          <a href="https://a3services.in.netlify.app" style="display: inline-block; background: linear-gradient(135deg, #00d2ff 0%, #0066ff 100%); color: #ffffff; text-decoration: none; padding: 12px 30px; font-size: 13px; font-weight: bold; border-radius: 30px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(0, 210, 255, 0.2);">
+          <a href="https://a3servicesin.netlify.app" style="display: inline-block; background: linear-gradient(135deg, #00d2ff 0%, #0066ff 100%); color: #ffffff; text-decoration: none; padding: 12px 30px; font-size: 13px; font-weight: bold; border-radius: 30px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(0, 210, 255, 0.2);">
             Visit Our Website
           </a>
         </div>

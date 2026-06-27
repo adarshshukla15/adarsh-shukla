@@ -16,6 +16,21 @@ import {
 import axios from 'axios';
 import { motion, AnimatePresence, Reorder } from 'framer-motion';
 
+const BASE_URL = import.meta.env.VITE_API_URL || 'https://adarsh-shukla.onrender.com/api';
+
+const customFetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+  let url = typeof input === 'string' ? input : input.toString();
+  if (url.startsWith('/api/')) {
+    url = url.replace('/api/', `${BASE_URL}/`);
+  } else if (url.startsWith('/api')) {
+    url = url.replace('/api', BASE_URL);
+  }
+  return window.fetch(url, init);
+};
+
+const fetch = customFetch;
+
+
 export default function Admin() {
   const { user, token, isAuthenticated, login, logout, checkAuth } = useAuthStore();
 
@@ -158,7 +173,7 @@ export default function Admin() {
     formData.append('file', item.file);
 
     try {
-      const response = await axios.post('/api/upload', formData, {
+      const response = await axios.post(`${BASE_URL}/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`
@@ -347,8 +362,7 @@ export default function Admin() {
   useEffect(() => {
     if (!token) return;
 
-    // Detect server address dynamically
-    const socketUrl = window.location.hostname === 'localhost' ? 'http://localhost:5000' : window.location.origin;
+    const socketUrl = window.location.hostname === 'localhost' ? 'http://localhost:5000' : BASE_URL.replace('/api', '');
     const socket = io(socketUrl);
 
     socket.on('newContact', (newInquiry: any) => {
@@ -2359,7 +2373,7 @@ export default function Admin() {
                           try {
                             const formData = new FormData();
                             formData.append('file', file);
-                            const response = await axios.post('/api/upload', formData, {
+                            const response = await axios.post(`${BASE_URL}/upload`, formData, {
                               headers: {
                                 'Content-Type': 'multipart/form-data',
                                 'Authorization': `Bearer ${token}`

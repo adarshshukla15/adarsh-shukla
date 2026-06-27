@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import axios from 'axios';
+import { contactService } from '../../../services/contact.service';
 import InputField from './InputField';
 import SubmitButton from './SubmitButton';
 import SuccessModal from './SuccessModal';
@@ -107,9 +107,9 @@ export default function InquiryForm() {
         message: data.message
       };
 
-      const response = await axios.post('/api/contact', payload);
+      const response = await contactService.submitContact(payload);
 
-      if (response.data.success) {
+      if (response.success) {
         setStatus('success');
         setSuccessMessage('We have received your direct inquiry briefs. A senior software architect will contact you in less than 24 hours.');
         reset();
@@ -119,10 +119,10 @@ export default function InquiryForm() {
         setMsgLength(0);
       } else {
         setStatus('error');
-        setErrorMessage(response.data.message || 'Error processing request.');
+        setErrorMessage(response.message || 'Error processing request.');
       }
     } catch (err: any) {
-      console.error('Axios inquiry submission failed:', err);
+      console.error('Inquiry submission failed:', err);
       setStatus('error');
       setErrorMessage(
         err.response?.data?.message || 'Network error submitting request. Please try again.'

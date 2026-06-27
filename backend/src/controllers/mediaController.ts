@@ -1,5 +1,12 @@
 import { Request, Response } from 'express';
 import { v2 as cloudinary } from 'cloudinary';
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
 import fs from 'fs';
 import path from 'path';
 import multer from 'multer';
@@ -73,7 +80,8 @@ export const uploadToCloudinaryOrLocal = async (localPath: string, filename: str
   }
 
   // Fallback: serve local file link
-  const fileUrl = `/uploads/${filename}`;
+  const baseUrl = process.env.BASE_URL || 'https://adarsh-shukla.onrender.com';
+  const fileUrl = `${baseUrl}/uploads/${filename}`;
   return {
     url: fileUrl,
     public_id: `local_${filename.split('-')[0] || 'file'}`

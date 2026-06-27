@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Express.js Backend for A3 Web & Software Services",
   "engines": {
-    "node": "20.x"
+    "node": ">=20"
   },
   "main": "dist/index.js",
   "scripts": {
