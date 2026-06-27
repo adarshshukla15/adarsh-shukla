@@ -2,6 +2,9 @@
   "name": "a3-agency-backend",
   "version": "1.0.0",
   "description": "Express.js Backend for A3 Web & Software Services",
+  "engines": {
+    "node": "20.x"
+  },
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
