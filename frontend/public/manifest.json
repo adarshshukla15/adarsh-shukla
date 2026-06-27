@@ -1,0 +1,16 @@
+{
+  "short_name": "A3 Agency",
+  "name": "A3 Web & Software Services",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='25' fill='%23050505'/%3E%3Ctext y='1.2em' x='0.1em' font-size='70' font-weight='black' fill='%2306b6d4'%3EA3%3C/text%3E%3C/svg%3E",
+      "type": "image/svg+xml",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#050505",
+  "theme_color": "#06b6d4",
+  "display": "standalone",
+  "orientation": "portrait"
+}

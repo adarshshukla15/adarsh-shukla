@@ -1,0 +1,143 @@
+{
+  "users": [
+    {
+      "name": "A3 Super Admin",
+      "email": "superadmin@a3.agency",
+      "password": "$2a$10$cqWpvuyTa7Wn7kVX/Os7y.MJRLj.VeWsI3VanCE.7IFcraoKLUe7.",
+      "role": "superadmin",
+      "id": "1e030f33900456e76d4e191c",
+      "_id": "1e030f33900456e76d4e191c",
+      "createdAt": "2026-06-27T09:32:18.100Z",
+      "updatedAt": "2026-06-27T09:32:18.101Z"
+    },
+    {
+      "name": "A3 Administrator",
+      "email": "admin@a3.agency",
+      "password": "$2a$10$CIDncbQHoBZFL3dxWXRkoeik2Pzjwoqj/LC/g3ovlmMaizEqVHRVi",
+      "role": "admin",
+      "id": "3611caed4bb39cbd4f177cad",
+      "_id": "3611caed4bb39cbd4f177cad",
+      "createdAt": "2026-06-27T09:32:18.177Z",
+      "updatedAt": "2026-06-27T09:32:18.177Z"
+    }
+  ],
+  "projects": [
+    {
+      "title": "Quantum Analytics Dashboard",
+      "description": "A Stripe-inspired real-time financial tracking dashboard featuring sub-millisecond chart updates, dark-themed glassmorphism, and responsive drag-and-drop metrics layout.",
+      "category": "Web App",
+      "client": "Quantum Inc.",
+      "budget": "$75,000",
+      "timeline": "12 Weeks",
+      "tags": [
+        "React 19",
+        "Zustand",
+        "Framer Motion",
+        "Express",
+        "Tailwind CSS"
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800",
+        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800"
+      ],
+      "liveUrl": "https://quantum-dash.a3.agency",
+      "githubUrl": "https://github.com/a3-agency/quantum-dash",
+      "id": "7cba1379edca5bbf809d0ddb",
+      "_id": "7cba1379edca5bbf809d0ddb",
+      "createdAt": "2026-06-25T10:37:03.253Z",
+      "updatedAt": "2026-06-25T10:37:03.253Z"
+    },
+    {
+      "title": "Orbital Mesh Wireframe Globe",
+      "description": "An Apple-comparable interactive landing page featuring custom WebGL shaders, particle simulations, and cursor magnet tracking. Smooth scroll engineered using Lenis and GSAP ScrollTrigger.",
+      "category": "Three.js / WebGL",
+      "client": "Aether Labs",
+      "budget": "$45,000",
+      "timeline": "8 Weeks",
+      "tags": [
+        "Three.js",
+        "React Three Fiber",
+        "GSAP",
+        "Lenis",
+        "Vite"
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800",
+        "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800"
+      ],
+      "liveUrl": "https://orbital.a3.agency",
+      "githubUrl": "https://github.com/a3-agency/orbital-globe",
+      "id": "ac6c7d6f20da16e63a487c18",
+      "_id": "ac6c7d6f20da16e63a487c18",
+      "createdAt": "2026-06-25T10:37:03.269Z",
+      "updatedAt": "2026-06-25T10:37:03.269Z"
+    },
+    {
+      "title": "Synapse AI Assistant",
+      "description": "An AI-powered automation hub integrated with custom LLMs, vector database embeddings, and automated Slack/Discord notification routines. Designed with complete microservices infrastructure.",
+      "category": "AI & Automation",
+      "client": "Synapse Technologies",
+      "budget": "$110,000",
+      "timeline": "16 Weeks",
+      "tags": [
+        "Node.js",
+        "LangChain",
+        "OpenAI API",
+        "MongoDB",
+        "React Router"
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1677442136019-21780efad99a?w=800",
+        "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800"
+      ],
+      "liveUrl": "https://synapse.a3.agency",
+      "githubUrl": "https://github.com/a3-agency/synapse-ai",
+      "id": "d2e19f38495689b2ce2e5872",
+      "_id": "d2e19f38495689b2ce2e5872",
+      "createdAt": "2026-06-25T10:37:03.285Z",
+      "updatedAt": "2026-06-25T10:37:03.285Z"
+    }
+  ],
+  "services": [],
+  "contacts": [],
+  "quotes": [],
+  "newsletter": [],
+  "testimonials": [
+    {
+      "name": "Sarah Jenkins",
+      "role": "VP of Engineering",
+      "company": "Acme Corp",
+      "feedback": "A3 delivered a custom React application that completely revolutionized our internally managed pipeline. Their mastery of animations and high performance is visible in every single pixel.",
+      "rating": 5,
+      "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
+      "id": "679c2646eeb9f0cff185d1fd",
+      "_id": "679c2646eeb9f0cff185d1fd",
+      "createdAt": "2026-06-25T10:37:03.304Z",
+      "updatedAt": "2026-06-25T10:37:03.305Z"
+    },
+    {
+      "name": "David Chen",
+      "role": "Founder & CEO",
+      "company": "Scribe AI",
+      "feedback": "Integrating complex OpenAI models and vector searches was completed in record time. A3 is not just an agency, they are technical partners that deeply understand modern software product cycles.",
+      "rating": 5,
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
+      "id": "1a033c618b1bf9ea32d4c993",
+      "_id": "1a033c618b1bf9ea32d4c993",
+      "createdAt": "2026-06-25T10:37:03.322Z",
+      "updatedAt": "2026-06-25T10:37:03.322Z"
+    },
+    {
+      "name": "Elena Rostova",
+      "role": "Chief Product Officer",
+      "company": "Apex Designs",
+      "feedback": "The Three.js interactivity and custom GSAP scroll transitions created a digital experience that directly increased our customer engagement metrics by 40%. Brilliant architecture.",
+      "rating": 5,
+      "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150",
+      "id": "e7f0c4eda8cb6a1439163a58",
+      "_id": "e7f0c4eda8cb6a1439163a58",
+      "createdAt": "2026-06-25T10:37:03.340Z",
+      "updatedAt": "2026-06-25T10:37:03.340Z"
+    }
+  ]
+}
