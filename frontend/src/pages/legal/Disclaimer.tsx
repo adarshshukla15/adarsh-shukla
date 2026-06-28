@@ -49,7 +49,7 @@ export default function Disclaimer() {
           For questions regarding these disclaimers, contact us:
         </p>
         <p className="text-cyan-400">
-          Email: <a href="mailto:adarshshukla.3services@gmail.com" className="hover:underline">adarshshukla.3services@gmail.com</a>
+          Email: <a href="mailto:a3webservices.inn@gmail.com" className="hover:underline">a3webservices.inn@gmail.com</a>
         </p>
       </section>
     </LegalPageLayout>

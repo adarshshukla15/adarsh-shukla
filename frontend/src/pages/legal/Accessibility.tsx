@@ -49,7 +49,7 @@ export default function Accessibility() {
           If you encounter navigation errors, reading challenges, or layout compliance issues on our site, please let us know:
         </p>
         <p className="text-cyan-400">
-          Email: <a href="mailto:adarshshukla.3services@gmail.com" className="hover:underline">adarshshukla.3services@gmail.com</a>
+          Email: <a href="mailto:a3webservices.inn@gmail.com" className="hover:underline">a3webservices.inn@gmail.com</a>
         </p>
       </section>
     </LegalPageLayout>

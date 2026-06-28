@@ -112,12 +112,12 @@ export default function PrivacyPolicy() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 p-4 rounded-xl border border-white/5 bg-white/[0.01]">
           <div>
             <p className="font-bold text-white">Adarsh Shukla</p>
-            <p>Email: <a href="mailto:adarshshukla.3services@gmail.com" className="text-cyan-400 hover:underline">adarshshukla.3services@gmail.com</a></p>
+            <p>Email: <a href="mailto:a3webservices.inn@gmail.com" className="text-cyan-400 hover:underline">a3webservices.inn@gmail.com</a></p>
             <p>Phone: <a href="tel:+917827174313" className="text-cyan-400 hover:underline">+91 78271 74313</a></p>
           </div>
           <div>
             <p className="font-bold text-white">Aditya Kumar</p>
-            <p>Email: <a href="mailto:adityakumar.a3services@gmail.com" className="text-cyan-400 hover:underline">adityakumar.a3services@gmail.com</a></p>
+            <p>Email: <a href="mailto:a3webservices.inn@gmail.com" className="text-cyan-400 hover:underline">a3webservices.inn@gmail.com</a></p>
             <p>Phone: <a href="tel:+917678451381" className="text-cyan-400 hover:underline">+91 76784 51381</a></p>
           </div>
         </div>
