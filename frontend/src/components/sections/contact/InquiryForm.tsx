@@ -13,7 +13,7 @@ import TimelineSlider from '../../ui/sliders/TimelineSlider';
 const schema = z.object({
   name: z.string().min(2, { message: 'Full name is required (min 2 chars).' }),
   email: z.string().email({ message: 'Please provide a valid email address.' }),
-  phone: z.string().min(10, { message: 'Phone must be a valid number (min 10 digits).' }).or(z.literal('')),
+  phone: z.string().min(10, { message: 'Phone must be a valid number (min 10 digits).' }),
   company: z.string().optional(),
   message: z.string().min(10, { message: 'Message must describe your project requirements (min 10 chars).' }).max(1000, { message: 'Message must be under 1000 characters.' })
 });
@@ -155,7 +155,7 @@ export default function InquiryForm() {
         {/* Row 2: Phone & Company */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <InputField
-            label="Phone Number (Optional)"
+            label="Phone Number *"
             iconName="FiPhone"
             register={register('phone')}
             error={errors.phone?.message}

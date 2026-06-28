@@ -40,8 +40,9 @@ export const validateContactInputs = [
     .isEmail().withMessage('Please enter a valid email address')
     .normalizeEmail(),
   body('phone')
-    .optional({ checkFalsy: true })
     .trim()
+    .notEmpty().withMessage('Phone number is required')
+    .isLength({ min: 10 }).withMessage('Phone must be a valid number (min 10 digits)')
     .escape(),
   body('company')
     .optional({ checkFalsy: true })
