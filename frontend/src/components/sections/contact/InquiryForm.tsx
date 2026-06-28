@@ -15,6 +15,7 @@ const schema = z.object({
   email: z.string().email({ message: 'Please provide a valid email address.' }),
   phone: z.string().min(10, { message: 'Phone must be a valid number (min 10 digits).' }).or(z.literal('')),
   company: z.string().optional(),
+  subject: z.string().min(2, { message: 'Subject is required (min 2 chars).' }).max(200, { message: 'Subject must be under 200 characters.' }),
   message: z.string().min(10, { message: 'Message must describe your project requirements (min 10 chars).' }).max(1000, { message: 'Message must be under 1000 characters.' })
 });
 
@@ -44,6 +45,7 @@ export default function InquiryForm() {
       email: '',
       phone: '',
       company: '',
+      subject: '',
       message: ''
     }
   });
@@ -103,10 +105,11 @@ export default function InquiryForm() {
         company: data.company,
         budget: new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(budget),
         timeline: timeline === 1 ? '1 Day' : `${timeline} Days`,
-        subject: `Inquiry: ${selectedTypes.join(', ')}`,
+        subject: data.subject,
         message: data.message
       };
 
+      console.log("Contact Form Payload:", payload);
       const response = await contactService.submitContact(payload);
 
       if (response.success) {
@@ -125,7 +128,7 @@ export default function InquiryForm() {
       console.error('Inquiry submission failed:', err);
       setStatus('error');
       setErrorMessage(
-        err.response?.data?.message || 'Network error submitting request. Please try again.'
+        err.response?.data?.message || err.message || 'Network error submitting request. Please try again.'
       );
     }
   };
@@ -164,6 +167,16 @@ export default function InquiryForm() {
             iconName="FiBriefcase"
             register={register('company')}
             error={errors.company?.message}
+          />
+        </div>
+
+        {/* Row 3: Subject */}
+        <div className="grid grid-cols-1 gap-4">
+          <InputField
+            label="Inquiry Subject *"
+            iconName="FiEdit2"
+            register={register('subject')}
+            error={errors.subject?.message}
           />
         </div>
 

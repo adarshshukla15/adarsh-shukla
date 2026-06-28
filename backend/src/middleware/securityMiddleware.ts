@@ -3,7 +3,7 @@ import { body } from 'express-validator';
 
 // 1. Memory-based rate limiter to protect endpoints from abuse
 const rateLimitWindowMs = 15 * 60 * 1000; // 15 minutes
-const rateLimitMaxRequests = 5; // limit each IP to 5 requests per windowMs
+const rateLimitMaxRequests = process.env.NODE_ENV === 'production' ? 10 : 100;
 const ipCache = new Map<string, { count: number; resetTime: number }>();
 
 export const rateLimiter = (req: Request, res: Response, next: NextFunction) => {

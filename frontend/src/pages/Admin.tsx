@@ -11,24 +11,17 @@ import {
   getBlogs, createBlog, updateBlog, deleteBlog,
   getFaqs, createFaq, updateFaq, deleteFaq,
   getTeam, createTeamMember, updateTeamMember, deleteTeamMember,
-  getSettings, updateSettings, uploadMedia, getMediaList, deleteMediaItem
+  getSettings, updateSettings, uploadMedia, getMediaList, deleteMediaItem,
+  getProjects, createProject, updateProject, deleteProject,
+  getServices, createService, updateService, deleteService,
+  getTestimonials, createTestimonial, updateTestimonial, deleteTestimonial,
+  getContacts, updateContactStatus, deleteContact,
+  getQuotes, updateQuoteStatus, deleteQuote,
+  getNewsletter
 } from '../api';
-import axios from 'axios';
+import api from '../services/api';
+import { authService } from '../services/auth.service';
 import { motion, AnimatePresence, Reorder } from 'framer-motion';
-
-const BASE_URL = import.meta.env.VITE_API_URL || 'https://adarsh-shukla.onrender.com/api';
-
-const customFetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
-  let url = typeof input === 'string' ? input : input.toString();
-  if (url.startsWith('/api/')) {
-    url = url.replace('/api/', `${BASE_URL}/`);
-  } else if (url.startsWith('/api')) {
-    url = url.replace('/api', BASE_URL);
-  }
-  return window.fetch(url, init);
-};
-
-const fetch = customFetch;
 
 
 export default function Admin() {
@@ -173,10 +166,9 @@ export default function Admin() {
     formData.append('file', item.file);
 
     try {
-      const response = await axios.post(`${BASE_URL}/upload`, formData, {
+      const response = await api.post('/upload', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'multipart/form-data'
         },
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round(
@@ -274,39 +266,47 @@ export default function Admin() {
     if (!token) return;
     setRefreshLoading(true);
     try {
-      const headers = { 'Authorization': `Bearer ${token}` };
-
-      const [pRes, sRes, tRes, mRes, qRes, nRes, bRes, fRes, tmRes, setRes, mediaRes] = await Promise.all([
-        fetch('/api/projects'),
-        fetch('/api/services'),
-        fetch('/api/testimonials'),
-        fetch('/api/contacts', { headers }),
-        fetch('/api/quotes', { headers }),
-        fetch('/api/newsletter', { headers }),
-        fetch('/api/blogs'),
-        fetch('/api/faqs'),
-        fetch('/api/team'),
-        fetch('/api/settings'),
-        getMediaList(token)
+      const [
+        pData,
+        sData,
+        tData,
+        mData,
+        qData,
+        nData,
+        bData,
+        fData,
+        tmData,
+        setData,
+        mediaData
+      ] = await Promise.all([
+        getProjects(),
+        getServices(),
+        getTestimonials(),
+        getContacts(),
+        getQuotes(),
+        getNewsletter(),
+        getBlogs(),
+        getFaqs(),
+        getTeam(),
+        getSettings(),
+        getMediaList()
       ]);
 
-      const [pData, sData, tData, mData, qData, nData, bData, fData, tmData, setData, mediaData] = await Promise.all([
-        pRes.json(), sRes.json(), tRes.json(), mRes.json(), qRes.json(), nRes.json(), bRes.json(), fRes.json(), tmRes.json(), setRes.json(), mediaRes
-      ]);
-
-      if (pData.success) setProjects(pData.data);
-      if (sData.success) setServices(sData.data);
-      if (tData.success) setTestimonials(tData.data);
-      if (mData.success) setMessages(mData.data);
-      if (qData.success) setQuotes(qData.data);
-      if (nData.success) setSubscribers(nData.data);
-      if (bData.success) setBlogs(bData.data);
-      if (fData.success) setFaqs(fData.data);
-      if (tmData.success) setTeam(tmData.data);
-      if (mediaData.success) setMediaFiles(mediaData.data);
-      if (setData.success && setData.data) {
-        setSettingsData(setData.data);
-        const sObj = setData.data;
+      setProjects(pData);
+      setServices(sData);
+      setTestimonials(tData);
+      setMessages(mData);
+      setQuotes(qData);
+      setSubscribers(nData);
+      setBlogs(bData);
+      setFaqs(fData);
+      setTeam(tmData);
+      if (mediaData && mediaData.success) {
+        setMediaFiles(mediaData.data);
+      }
+      if (setData) {
+        setSettingsData(setData);
+        const sObj = setData;
         setSettingsForm({
           companyName: sObj.companyName || '',
           email: sObj.email || '',
@@ -332,16 +332,16 @@ export default function Admin() {
       }
 
       // Media loaded directly from media collection API. Falling back if empty.
-      if (!mediaData.success || !mediaData.data || mediaData.data.length === 0) {
+      if (!mediaData || !mediaData.success || !mediaData.data || mediaData.data.length === 0) {
         const mediaUrls = new Set<string>();
-        [...pData.data].forEach(p => {
+        [...pData].forEach(p => {
           if (p.thumbnail) mediaUrls.add(p.thumbnail);
           p.gallery?.forEach((img: string) => mediaUrls.add(img));
-          p.images?.forEach((img: string) => mediaUrls.add(img));
+          (p as any).images?.forEach((img: string) => mediaUrls.add(img));
         });
-        [...tData.data].forEach(t => t.avatar && mediaUrls.add(t.avatar));
-        [...bData.data].forEach(b => b.featuredImage && mediaUrls.add(b.featuredImage));
-        [...tmData.data].forEach(tm => tm.photo && mediaUrls.add(tm.photo));
+        [...tData].forEach(t => t.avatar && mediaUrls.add(t.avatar));
+        [...bData].forEach(b => b.featuredImage && mediaUrls.add(b.featuredImage));
+        [...tmData].forEach(tm => tm.photo && mediaUrls.add(tm.photo));
         setMediaFiles(Array.from(mediaUrls).map(url => ({ url })));
       }
 
@@ -362,7 +362,7 @@ export default function Admin() {
   useEffect(() => {
     if (!token) return;
 
-    const socketUrl = window.location.hostname === 'localhost' ? 'http://localhost:5000' : BASE_URL.replace('/api', '');
+    const socketUrl = (import.meta.env.VITE_API_URL || 'https://adarsh-shukla.onrender.com/api').replace('/api', '');
     const socket = io(socketUrl);
 
     socket.on('newContact', (newInquiry: any) => {
@@ -387,20 +387,15 @@ export default function Admin() {
     setLoginLoading(true);
     setLoginError('');
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await res.json();
+      const data = await authService.login({ email, password });
       if (data.success) {
         login(data.token, data.user);
       } else {
         setLoginError(data.message || 'Invalid credentials');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setLoginError('Server connection failed.');
+      setLoginError(err.response?.data?.message || err.message || 'Server connection failed.');
     } finally {
       setLoginLoading(false);
     }
@@ -411,19 +406,14 @@ export default function Admin() {
     if (!resetEmail) return;
     setResetStatus({ type: 'loading', msg: 'Generating pin...' });
     try {
-      const res = await fetch('/api/auth/forgot-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: resetEmail })
-      });
-      const data = await res.json();
+      const data = await authService.forgotPassword(resetEmail);
       if (data.success) {
         setResetStatus({ type: 'success', msg: 'Security code dispatched.' });
       } else {
         setResetStatus({ type: 'error', msg: data.message });
       }
-    } catch (err) {
-      setResetStatus({ type: 'error', msg: 'Service failure.' });
+    } catch (err: any) {
+      setResetStatus({ type: 'error', msg: err.response?.data?.message || err.message || 'Service failure.' });
     }
   };
 
@@ -432,12 +422,7 @@ export default function Admin() {
     if (!resetEmail || !resetToken || !resetNewPass) return;
     setResetStatus({ type: 'loading', msg: 'Updating password...' });
     try {
-      const res = await fetch('/api/auth/reset-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: resetEmail, token: resetToken, newPassword: resetNewPass })
-      });
-      const data = await res.json();
+      const data = await authService.resetPassword({ email: resetEmail, token: resetToken, newPassword: resetNewPass });
       if (data.success) {
         setResetStatus({ type: 'success', msg: 'Success! Log in now.' });
         setTimeout(() => {
@@ -447,8 +432,8 @@ export default function Admin() {
       } else {
         setResetStatus({ type: 'error', msg: data.message });
       }
-    } catch (err) {
-      setResetStatus({ type: 'error', msg: 'Reset failed.' });
+    } catch (err: any) {
+      setResetStatus({ type: 'error', msg: err.response?.data?.message || err.message || 'Reset failed.' });
     }
   };
 
@@ -472,11 +457,8 @@ export default function Admin() {
     }
     if (!confirm('Are you sure you want to delete this record?')) return;
     try {
-      const res = await fetch(`/api/${route}/${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (res.ok) {
+      const res = await api.delete(`/${route}/${id}`);
+      if (res.status === 200 || res.data.success) {
         fetchData();
       }
     } catch (err) {
@@ -486,15 +468,8 @@ export default function Admin() {
 
   const handleMessageStatus = async (id: string, newStatus: string) => {
     try {
-      const res = await fetch(`/api/contacts/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ status: newStatus })
-      });
-      if (res.ok) fetchData();
+      const res = await updateContactStatus(id, newStatus);
+      if (res.success) fetchData();
     } catch (err) {
       console.error(err);
     }
@@ -502,15 +477,8 @@ export default function Admin() {
 
   const handleQuoteStatus = async (id: string, currentStatus: string) => {
     try {
-      const res = await fetch(`/api/quotes/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ status: currentStatus === 'processed' ? 'pending' : 'processed' })
-      });
-      if (res.ok) fetchData();
+      const res = await updateQuoteStatus(id, currentStatus === 'processed' ? 'pending' : 'processed');
+      if (res.success) fetchData();
     } catch (err) {
       console.error(err);
     }
@@ -525,31 +493,26 @@ export default function Admin() {
       return;
     }
 
-    const url = editId ? `/api/projects/${editId}` : '/api/projects';
-    const method = editId ? 'PUT' : 'POST';
-
     try {
-      const res = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          title: projectForm.title,
-          description: projectForm.description,
-          category: projectForm.category,
-          client: projectForm.client,
-          budget: projectForm.budget,
-          timeline: projectForm.timeline,
-          tags: projectForm.tags.split(',').map((t) => t.trim()).filter((t) => t !== ''),
-          thumbnail: uploadedImages[0]?.url || '',
-          gallery: uploadedImages.slice(1).map(img => img.url),
-          liveUrl: projectForm.liveUrl,
-          githubUrl: projectForm.githubUrl
-        })
-      });
-      if (res.ok) {
+      const payload = {
+        title: projectForm.title,
+        description: projectForm.description,
+        category: projectForm.category,
+        client: projectForm.client,
+        budget: projectForm.budget,
+        timeline: projectForm.timeline,
+        tags: projectForm.tags.split(',').map((t) => t.trim()).filter((t) => t !== ''),
+        thumbnail: uploadedImages[0]?.url || '',
+        gallery: uploadedImages.slice(1).map(img => img.url),
+        liveUrl: projectForm.liveUrl,
+        githubUrl: projectForm.githubUrl
+      };
+
+      const res = editId 
+        ? await updateProject(editId, payload)
+        : await createProject(payload);
+
+      if (res.success) {
         setModalType(null);
         setEditId(null);
         setProjectForm({ title: '', description: '', category: '', client: '', budget: '', timeline: '', tags: '', images: '', liveUrl: '', githubUrl: '' });
@@ -564,22 +527,17 @@ export default function Admin() {
 
   const handleServiceSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const url = editId ? `/api/services/${editId}` : '/api/services';
-    const method = editId ? 'PUT' : 'POST';
-
     try {
-      const res = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          ...serviceForm,
-          details: serviceForm.details.split(',').map((d) => d.trim()).filter((d) => d !== '')
-        })
-      });
-      if (res.ok) {
+      const payload = {
+        ...serviceForm,
+        details: serviceForm.details.split(',').map((d) => d.trim()).filter((d) => d !== '')
+      };
+
+      const res = editId
+        ? await updateService(editId, payload)
+        : await createService(payload);
+
+      if (res.success) {
         setModalType(null);
         setEditId(null);
         fetchData();
@@ -592,22 +550,17 @@ export default function Admin() {
 
   const handleTestimonialSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const url = editId ? `/api/testimonials/${editId}` : '/api/testimonials';
-    const method = editId ? 'PUT' : 'POST';
-
     try {
-      const res = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          ...testimonialForm,
-          rating: Number(testimonialForm.rating)
-        })
-      });
-      if (res.ok) {
+      const payload = {
+        ...testimonialForm,
+        rating: Number(testimonialForm.rating)
+      };
+
+      const res = editId
+        ? await updateTestimonial(editId, payload)
+        : await createTestimonial(payload);
+
+      if (res.success) {
         setModalType(null);
         setEditId(null);
         fetchData();
@@ -1132,12 +1085,7 @@ export default function Admin() {
             </div>
           )}
 
-          <div className="mt-8 border-t border-white/5 pt-4 text-center">
-            <span className="text-[9px] text-neutral-600 tracking-wide">
-              Default credentials: <br />
-              <strong>admin@a3.agency</strong> / <strong>adminpassword123</strong>
-            </span>
-          </div>
+
         </div>
       </div>
     );
@@ -2373,10 +2321,9 @@ export default function Admin() {
                           try {
                             const formData = new FormData();
                             formData.append('file', file);
-                            const response = await axios.post(`${BASE_URL}/upload`, formData, {
+                            const response = await api.post('/upload', formData, {
                               headers: {
-                                'Content-Type': 'multipart/form-data',
-                                'Authorization': `Bearer ${token}`
+                                'Content-Type': 'multipart/form-data'
                               },
                               onUploadProgress: (progressEvent) => {
                                 const percentCompleted = Math.round((progressEvent.loaded * 100) / (progressEvent.total || progressEvent.loaded));

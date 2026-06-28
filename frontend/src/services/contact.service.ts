@@ -4,6 +4,7 @@ import { ContactData, QuoteData } from '../types/contact';
 export const contactService = {
   async submitContact(data: ContactData): Promise<{ success: boolean; message: string }> {
     try {
+      console.log("Contact Payload in Service:", data);
       const response = await api.post('/contact', data);
       return response.data;
     } catch (error) {

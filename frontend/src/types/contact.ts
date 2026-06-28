@@ -3,6 +3,8 @@ export interface ContactData {
   email: string;
   subject: string;
   message: string;
+  phone?: string;
+  company?: string;
 }
 
 export interface QuoteData {

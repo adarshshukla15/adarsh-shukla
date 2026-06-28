@@ -20,7 +20,15 @@ export interface Testimonial {
 
 // Client service bridges preserving original method signatures for backward compatibility
 export const getProjects = projectService.getProjects;
+export const createProject = projectService.createProject;
+export const updateProject = projectService.updateProject;
+export const deleteProject = projectService.deleteProject;
+
 export const getServices = serviceService.getServices;
+export const createService = serviceService.createService;
+export const updateService = serviceService.updateService;
+export const deleteService = serviceService.deleteService;
+
 export const submitContact = contactService.submitContact;
 export const submitQuote = contactService.submitQuote;
 
@@ -89,5 +97,15 @@ export async function getMediaList(token?: string): Promise<any> {
 export async function deleteMediaItem(id: string, token?: string): Promise<any> {
   return adminService.deleteMediaItem(id);
 }
+
+export const getContacts = adminService.getContacts;
+export const updateContactStatus = adminService.updateContactStatus;
+export const deleteContact = adminService.deleteContact;
+
+export const getQuotes = adminService.getQuotes;
+export const updateQuoteStatus = adminService.updateQuoteStatus;
+export const deleteQuote = adminService.deleteQuote;
+
+export const getNewsletter = adminService.getNewsletter;
 
 export const subscribeNewsletter = contactService.subscribeNewsletter;

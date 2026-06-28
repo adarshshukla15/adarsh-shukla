@@ -231,5 +231,78 @@ export const adminService = {
       console.error('Error uploading file:', error);
       throw error;
     }
+  },
+
+  // Contacts Management
+  async getContacts(): Promise<any[]> {
+    try {
+      const response = await api.get('/contacts');
+      return response.data.data || [];
+    } catch (error) {
+      console.error('Error fetching contacts:', error);
+      throw error;
+    }
+  },
+
+  async updateContactStatus(id: string, status: string): Promise<any> {
+    try {
+      const response = await api.put(`/contacts/${id}`, { status });
+      return response.data;
+    } catch (error) {
+      console.error('Error updating contact status:', error);
+      throw error;
+    }
+  },
+
+  async deleteContact(id: string): Promise<any> {
+    try {
+      const response = await api.delete(`/contacts/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting contact:', error);
+      throw error;
+    }
+  },
+
+  // Quotes Management
+  async getQuotes(): Promise<any[]> {
+    try {
+      const response = await api.get('/quotes');
+      return response.data.data || [];
+    } catch (error) {
+      console.error('Error fetching quotes:', error);
+      throw error;
+    }
+  },
+
+  async updateQuoteStatus(id: string, status: string): Promise<any> {
+    try {
+      const response = await api.put(`/quotes/${id}`, { status });
+      return response.data;
+    } catch (error) {
+      console.error('Error updating quote status:', error);
+      throw error;
+    }
+  },
+
+  async deleteQuote(id: string): Promise<any> {
+    try {
+      const response = await api.delete(`/quotes/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting quote:', error);
+      throw error;
+    }
+  },
+
+  // Newsletter Management
+  async getNewsletter(): Promise<any[]> {
+    try {
+      const response = await api.get('/newsletter');
+      return response.data.data || [];
+    } catch (error) {
+      console.error('Error fetching newsletter subscribers:', error);
+      throw error;
+    }
   }
 };
