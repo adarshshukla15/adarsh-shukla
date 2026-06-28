@@ -48,7 +48,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-8">
           
           {/* Brand Info */}
-          <div className="lg:col-span-4">
+          <div className="lg:col-span-3">
             <Link to="/" className="flex items-center gap-2.5 font-bold tracking-tight text-white mb-6">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden shadow-[0_0_20px_rgba(6,182,212,0.2)]">
                 <img src="/favicon.png" alt="logo" className="h-full w-full object-cover" />
@@ -102,7 +102,7 @@ export default function Footer() {
           </div>
 
           {/* Navigation Links */}
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-5">
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 lg:col-span-6">
             <div>
               <h3 className="text-xs font-semibold uppercase tracking-widest text-white mb-6">Explore</h3>
               <ul className="space-y-4">
@@ -171,6 +171,19 @@ export default function Footer() {
                 </li>
               </ul>
             </div>
+
+            {/* Legal Links */}
+            <div className="col-span-2 sm:col-span-1">
+              <h3 className="text-xs font-semibold uppercase tracking-widest text-white mb-6">Legal</h3>
+              <ul className="space-y-4">
+                <li><Link to="/privacy-policy" className="text-sm text-neutral-400 hover:text-cyan-400 transition-colors">Privacy Policy</Link></li>
+                <li><Link to="/terms-and-conditions" className="text-sm text-neutral-400 hover:text-cyan-400 transition-colors">Terms & Conditions</Link></li>
+                <li><Link to="/refund-policy" className="text-sm text-neutral-400 hover:text-cyan-400 transition-colors">Refund Policy</Link></li>
+                <li><Link to="/cookie-policy" className="text-sm text-neutral-400 hover:text-cyan-400 transition-colors">Cookie Policy</Link></li>
+                <li><Link to="/disclaimer" className="text-sm text-neutral-400 hover:text-cyan-400 transition-colors">Disclaimer</Link></li>
+                <li><Link to="/accessibility" className="text-sm text-neutral-400 hover:text-cyan-400 transition-colors">Accessibility</Link></li>
+              </ul>
+            </div>
           </div>
 
           {/* Newsletter Form */}
@@ -214,9 +227,7 @@ export default function Footer() {
           <p className="text-xs text-neutral-500">
             {settings?.copyright || `© ${new Date().getFullYear()} ${settings?.companyName || 'A3 Web & Software Services'}. All rights reserved.`}
           </p>
-          <div className="flex gap-6">
-            <a href="#" className="text-xs text-neutral-500 hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="text-xs text-neutral-500 hover:text-white transition-colors">Terms of Service</a>
+          <div className="flex gap-6 font-mono">
             <Link to="/admin" className="text-xs text-neutral-500 hover:text-cyan-400 transition-colors">Admin Dashboard</Link>
           </div>
         </div>
