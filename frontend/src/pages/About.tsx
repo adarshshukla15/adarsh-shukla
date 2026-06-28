@@ -5,10 +5,18 @@ import WhyChooseUs from '../components/sections/WhyChooseUs';
 import { getTeam } from '../api';
 
 const timeline = [
-  { year: '2023', title: 'Agency Inception', desc: 'A3 was founded by three veteran full-stack engineers in Silicon Valley, seeking to skip generic template builds and deliver real high-fidelity software.' },
-  { year: '2024', title: 'Entering AI Pipelines', desc: 'Integrated OpenAI, Vector indexing and automated AI agent bots into custom CRM/ERP projects, saving thousands in manual operational costs for our clients.' },
-  { year: '2025', title: 'WebGL and 3D Visuals', desc: 'Launched several custom high-impact marketing websites utilizing Three.js and custom WebGL shaders, achieving multiple Awwwards honors.' },
-  { year: '2026', title: 'Global Enterprise Scale', desc: 'Currently managing high-traffic architectures executing millions of weekly requests, maintaining a proud 99.9% uptime SLA.' }
+  { 
+    year: '2026', 
+    title: 'Company Founded', 
+    desc: 'A3 Web & Software Services was founded by Adarsh Shukla and Aditya Kumar to engineer high-performance custom software systems and premium websites.',
+    isGlow: false
+  },
+  { 
+    year: 'Next', 
+    title: 'Future Milestones', 
+    desc: 'Updated Soon',
+    isGlow: true
+  }
 ];
 
 export default function About() {
@@ -125,7 +133,18 @@ export default function About() {
                     >
                       <span className="font-mono text-cyan-400 font-bold text-lg">{item.year}</span>
                       <h4 className="text-md font-bold text-white mt-1 uppercase tracking-wide">{item.title}</h4>
-                      <p className="text-xs text-neutral-400 leading-relaxed font-light mt-3">{item.desc}</p>
+                      {item.isGlow ? (
+                        <p 
+                          className="text-xs font-black tracking-widest uppercase mt-3 text-cyan-400 animate-pulse select-none"
+                          style={{
+                            textShadow: '0 0 10px rgba(34, 211, 238, 0.8), 0 0 20px rgba(34, 211, 238, 0.4)'
+                          }}
+                        >
+                          {item.desc}
+                        </p>
+                      ) : (
+                        <p className="text-xs text-neutral-400 leading-relaxed font-light mt-3">{item.desc}</p>
+                      )}
                     </motion.div>
                   </div>
 
