@@ -15,7 +15,6 @@ const schema = z.object({
   email: z.string().email({ message: 'Please provide a valid email address.' }),
   phone: z.string().min(10, { message: 'Phone must be a valid number (min 10 digits).' }).or(z.literal('')),
   company: z.string().optional(),
-  subject: z.string().min(2, { message: 'Subject is required (min 2 chars).' }).max(200, { message: 'Subject must be under 200 characters.' }),
   message: z.string().min(10, { message: 'Message must describe your project requirements (min 10 chars).' }).max(1000, { message: 'Message must be under 1000 characters.' })
 });
 
@@ -45,7 +44,6 @@ export default function InquiryForm() {
       email: '',
       phone: '',
       company: '',
-      subject: '',
       message: ''
     }
   });
@@ -105,7 +103,7 @@ export default function InquiryForm() {
         company: data.company,
         budget: new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(budget),
         timeline: timeline === 1 ? '1 Day' : `${timeline} Days`,
-        subject: data.subject,
+        subject: `Inquiry: ${selectedTypes.join(', ')}`,
         message: data.message
       };
 
@@ -170,15 +168,7 @@ export default function InquiryForm() {
           />
         </div>
 
-        {/* Row 3: Subject */}
-        <div className="grid grid-cols-1 gap-4">
-          <InputField
-            label="Inquiry Subject *"
-            iconName="FiEdit2"
-            register={register('subject')}
-            error={errors.subject?.message}
-          />
-        </div>
+
 
         {/* Project Types Selector (Chips) */}
         <div className="flex flex-col gap-2">
