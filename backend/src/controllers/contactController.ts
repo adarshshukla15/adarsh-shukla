@@ -40,55 +40,51 @@ export const createContact = async (req: Request, res: Response) => {
       io.emit('newContact', contact);
     }
 
+    // Immediately send HTTP success response to the client
+    res.status(200).json({
+      success: true,
+      message: 'Inquiry submitted successfully.',
+      data: contact
+    });
+
     // Extract diagnostic info
     const ip = req.ip || req.socket.remoteAddress || 'unknown';
     const browser = req.headers['user-agent'] || 'unknown';
     const date = new Date().toLocaleString();
 
-    let emailDeliveryFailed = false;
-    try {
-      // Send alert to admin
-      await sendAdminInquiry({
-        name,
-        email,
-        phone,
-        company,
-        budget,
-        timeline,
-        subject,
-        message,
-        ip,
-        date,
-        browser
-      });
+    // Trigger email alerts asynchronously in the background
+    (async () => {
+      try {
+        // Send alert to admin
+        await sendAdminInquiry({
+          name,
+          email,
+          phone,
+          company,
+          budget,
+          timeline,
+          subject,
+          message,
+          ip,
+          date,
+          browser
+        });
 
-      // Send confirmation to customer
-      await sendCustomerConfirmation({
-        name,
-        email,
-        subject,
-        budget,
-        timeline
-      });
+        // Send confirmation to customer
+        await sendCustomerConfirmation({
+          name,
+          email,
+          subject,
+          budget,
+          timeline
+        });
 
-      console.log(`[Contact SMTP] Inquiry notifications sent successfully for client: ${email}`);
-    } catch (smtpError: any) {
-      console.error('[SMTP Delivery Failed] Detailed Stack Trace Below:');
-      console.error(smtpError.stack || smtpError.message || smtpError);
-      emailDeliveryFailed = true;
-    }
-
-    if (emailDeliveryFailed) {
-      return res.status(200).json({
-        success: true,
-        message: 'Your inquiry has been saved successfully. Email delivery failed.'
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: 'Inquiry submitted successfully.'
-    });
+        console.log(`[Contact SMTP] Inquiry notifications sent successfully in background for client: ${email}`);
+      } catch (smtpError: any) {
+        console.error('[SMTP Delivery Failed in Background] Detailed Stack Trace Below:');
+        console.error(smtpError.stack || smtpError.message || smtpError);
+      }
+    })();
 
   } catch (error) {
     console.error('Create contact error:', error);
