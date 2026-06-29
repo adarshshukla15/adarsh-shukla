@@ -4,8 +4,19 @@ import { v2 as cloudinary } from 'cloudinary';
 
 /**
  * Upload a buffer directly to Cloudinary (no local file system usage).
+ * Cloudinary is configured lazily via mediaController's ensureCloudinaryConfigured,
+ * but since this module may run independently, we configure here too if needed.
  */
 const uploadBufferToCloudinary = (buffer: Buffer): Promise<{ url: string; public_id: string }> => {
+  // Ensure cloudinary is configured (dotenv may not have loaded at import time)
+  if (!cloudinary.config().cloud_name) {
+    cloudinary.config({
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+      secure: true,
+    });
+  }
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       { folder: 'a3_agency_cms', resource_type: 'image' },

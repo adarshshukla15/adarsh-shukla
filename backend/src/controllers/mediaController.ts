@@ -4,17 +4,22 @@ import multer from 'multer';
 import path from 'path';
 import { MediaModel } from '../models/mediaModel';
 
-// Validate Cloudinary configuration at startup
-if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
-  console.error('WARNING: Cloudinary environment variables (CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET) are not set. Image uploads will fail.');
-}
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: true,
-});
+// Lazy Cloudinary initialization — ensures dotenv has loaded before reading env vars
+let cloudinaryConfigured = false;
+const ensureCloudinaryConfigured = () => {
+  if (!cloudinaryConfigured) {
+    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+      console.error('WARNING: Cloudinary environment variables are not set. Image uploads will fail.');
+    }
+    cloudinary.config({
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+      secure: true,
+    });
+    cloudinaryConfigured = true;
+  }
+};
 
 // Configure Multer with MEMORY storage (no local file writes — Render-safe)
 const storage = multer.memoryStorage();
@@ -37,6 +42,7 @@ export const uploadMiddleware = multer({
  * Upload a buffer directly to Cloudinary (no local file system usage).
  */
 const uploadBufferToCloudinary = (buffer: Buffer, originalname: string): Promise<{ url: string; public_id: string }> => {
+  ensureCloudinaryConfigured();
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       { folder: 'a3_agency_cms', resource_type: 'image' },
@@ -59,6 +65,7 @@ const uploadBufferToCloudinary = (buffer: Buffer, originalname: string): Promise
  * Now uses Cloudinary only — no local fallback.
  */
 export const uploadToCloudinaryOrLocal = async (localPath: string, filename: string): Promise<{ url: string; public_id: string }> => {
+  ensureCloudinaryConfigured();
   try {
     const result = await cloudinary.uploader.upload(localPath, {
       folder: 'a3_agency_cms'
@@ -128,6 +135,7 @@ export const deleteMediaFile = async (req: Request, res: Response) => {
     const { public_id } = media;
 
     // Delete from Cloudinary
+    ensureCloudinaryConfigured();
     if (public_id && !public_id.startsWith('local_')) {
       try {
         await cloudinary.uploader.destroy(public_id);
