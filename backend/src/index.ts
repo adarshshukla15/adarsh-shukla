@@ -40,7 +40,16 @@ app.use('/api', apiRouter);
 
 // Basic health check endpoint
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK', timestamp: new Date() });
+  res.status(200).json({ 
+    status: 'OK', 
+    timestamp: new Date(),
+    env: {
+      MONGO_URI: process.env.MONGO_URI ? 'SET' : 'MISSING',
+      CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME || 'MISSING',
+      CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY ? 'SET' : 'MISSING',
+      CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET ? 'SET' : 'MISSING',
+    }
+  });
 });
 
 // Seed additional collections ONLY if they are completely empty (first-time setup)
