@@ -108,9 +108,15 @@ export const uploadImage = async (req: Request, res: Response) => {
       public_id: media.public_id,
       _id: media._id
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Upload image route error:', error);
-    return res.status(500).json({ success: false, message: 'Server error during upload. Ensure Cloudinary is configured.' });
+    const hasCloudVars = !!(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET);
+    return res.status(500).json({ 
+      success: false, 
+      message: `Upload failed: ${error?.message || 'Unknown error'}`,
+      cloudinaryConfigured: hasCloudVars,
+      cloudName: process.env.CLOUDINARY_CLOUD_NAME || 'NOT SET'
+    });
   }
 };
 
