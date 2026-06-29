@@ -26,7 +26,37 @@ const features = [
 
 export default function WhyChooseUs() {
   return (
-    <section className="relative py-24 px-6 md:px-12 bg-black border-t border-white/5">
+    <section className="relative py-24 px-6 md:px-12 bg-black border-t border-white/5 overflow-hidden">
+      {/* Luxurious ambient white glow styles */}
+      <style>{`
+        .premium-feature-card {
+          position: relative;
+          box-shadow: 0 0 30px rgba(255, 255, 255, 0.05),
+                      0 0 80px rgba(255, 255, 255, 0.08),
+                      0 20px 60px rgba(255, 255, 255, 0.04);
+          transition: box-shadow 400ms ease, border-color 400ms ease !important;
+        }
+        .premium-feature-card::before {
+          content: '';
+          position: absolute;
+          inset: -40px;
+          background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 35%, transparent 75%);
+          filter: blur(45px);
+          opacity: 0.7;
+          z-index: -1;
+          pointer-events: none;
+          transition: opacity 400ms ease;
+        }
+        .premium-feature-card:hover {
+          box-shadow: 0 0 50px rgba(255, 255, 255, 0.12),
+                      0 0 100px rgba(255, 255, 255, 0.08),
+                      0 30px 80px rgba(255, 255, 255, 0.08) !important;
+        }
+        .premium-feature-card:hover::before {
+          opacity: 1.0;
+        }
+      `}</style>
+      
       <div className="mx-auto max-w-7xl">
         
         {/* Title */}
@@ -52,8 +82,12 @@ export default function WhyChooseUs() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: '-50px' }}
                 transition={{ duration: 0.8, ease: 'easeOut' }}
+                whileHover={{ 
+                  scale: 1.02,
+                  transition: { duration: 0.4, ease: 'easeOut' }
+                }}
                 key={idx}
-                className="glass-panel glass-panel-hover p-8 rounded-2xl flex gap-6"
+                className="glass-panel p-8 rounded-2xl flex gap-6 premium-feature-card"
               >
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
                   <Icon size={20} />
