@@ -56,6 +56,27 @@ export default function ProjectsSection() {
               <div key={i} className="h-[400px] rounded-3xl bg-white/[0.01] border border-white/5 animate-pulse" />
             ))}
           </div>
+        ) : projects.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 text-center w-full relative overflow-hidden rounded-3xl border border-white/5 bg-white/[0.01]">
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-indigo-500/5 opacity-30 animate-pulse pointer-events-none" />
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="relative z-10"
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-6 animate-bounce">
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
+                Updated Soon
+              </div>
+              <h3 className="text-2xl font-black text-white tracking-tight md:text-3xl uppercase">
+                New Creations In Progress
+              </h3>
+              <p className="mt-3 text-neutral-400 max-w-md mx-auto text-sm leading-relaxed">
+                We are currently building advanced digital products and refreshing our portfolio. Check back shortly to see our latest engineering work.
+              </p>
+            </motion.div>
+          </div>
         ) : (
           <div className="space-y-24">
             {projects.slice(0, 3).map((project, idx) => {
