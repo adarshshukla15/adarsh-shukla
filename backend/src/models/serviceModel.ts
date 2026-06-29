@@ -1,6 +1,4 @@
 import { Schema, model } from 'mongoose';
-import { isMongoDBActive } from '../config/db';
-import { LocalRepo } from '../utils/localDb';
 
 export interface IService {
   id?: string;
@@ -37,31 +35,11 @@ try {
   MongoServiceModel = model('Service');
 }
 
-const LocalServiceRepo = new LocalRepo<IService>('services');
-
 export const ServiceModel = {
-  find: async (query: any = {}) => {
-    if (isMongoDBActive()) return MongoServiceModel.find(query);
-    return LocalServiceRepo.find(query);
-  },
-  findOne: async (query: any) => {
-    if (isMongoDBActive()) return MongoServiceModel.findOne(query);
-    return LocalServiceRepo.findOne(query);
-  },
-  findById: async (id: string) => {
-    if (isMongoDBActive()) return MongoServiceModel.findById(id);
-    return LocalServiceRepo.findById(id);
-  },
-  create: async (data: any) => {
-    if (isMongoDBActive()) return MongoServiceModel.create(data);
-    return LocalServiceRepo.create(data);
-  },
-  findByIdAndUpdate: async (id: string, update: any) => {
-    if (isMongoDBActive()) return MongoServiceModel.findByIdAndUpdate(id, update, { new: true });
-    return LocalServiceRepo.findByIdAndUpdate(id, update);
-  },
-  findByIdAndDelete: async (id: string) => {
-    if (isMongoDBActive()) return MongoServiceModel.findByIdAndDelete(id);
-    return LocalServiceRepo.findByIdAndDelete(id);
-  }
+  find: async (query: any = {}) => MongoServiceModel.find(query),
+  findOne: async (query: any) => MongoServiceModel.findOne(query),
+  findById: async (id: string) => MongoServiceModel.findById(id),
+  create: async (data: any) => MongoServiceModel.create(data),
+  findByIdAndUpdate: async (id: string, update: any) => MongoServiceModel.findByIdAndUpdate(id, update, { new: true }),
+  findByIdAndDelete: async (id: string) => MongoServiceModel.findByIdAndDelete(id)
 };

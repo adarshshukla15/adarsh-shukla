@@ -3,30 +3,27 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-let useMongoDB = false;
-
 export const connectDB = async (): Promise<boolean> => {
   const mongoUri = process.env.MONGO_URI;
   if (!mongoUri) {
-    console.warn('MONGO_URI is not set in environment. Falling back to local JSON database.');
-    useMongoDB = false;
-    return false;
+    console.error('FATAL: MONGO_URI is not set in environment variables. MongoDB is REQUIRED for production.');
+    process.exit(1);
   }
 
   try {
     mongoose.set('strictQuery', true);
     await mongoose.connect(mongoUri, {
-      serverSelectionTimeoutMS: 3000 // Fast fail-over to local JSON database if not running
+      serverSelectionTimeoutMS: 30000 // 30s timeout for Render cold starts
     });
     console.log('Successfully connected to MongoDB.');
-    useMongoDB = true;
     return true;
   } catch (error) {
-    console.error('MongoDB connection failed. Falling back to local JSON database. Error:', (error as Error).message);
-    useMongoDB = false;
-    return false;
+    console.error('FATAL: MongoDB connection failed. Error:', (error as Error).message);
+    console.error('The server cannot start without a working MongoDB connection.');
+    process.exit(1);
   }
 };
 
-export const isMongoDBActive = () => useMongoDB;
+// Always true — MongoDB is now required
+export const isMongoDBActive = () => true;
 export { mongoose };

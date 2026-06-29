@@ -35,9 +35,6 @@ app.use(cors({
 app.use(express.json());
 app.use(morgan('dev'));
 
-// Static assets upload folder setup
-app.use('/uploads', express.static('uploads'));
-
 // Primary API Router
 app.use('/api', apiRouter);
 
@@ -46,28 +43,16 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date() });
 });
 
-// Seed additional collections
+// Seed additional collections ONLY if they are completely empty (first-time setup)
 const seedExtraData = async () => {
   try {
-    // Seed settings if empty or containing old credentials
+    // Seed default settings if none exist
     const settings = await SettingsModel.get();
-    if (settings && (
-      settings.email.includes('gamail.com') ||
-      settings.email.includes('info@a3.agency') ||
-      settings.phone.includes('1234') ||
-      !settings.email.includes('a3services.inn@gmail.com') ||
-      !settings.phone.includes('78271')
-    )) {
-      await SettingsModel.update({
-        email: 'a3services.inn@gmail.com',
-        phone: '+91 78271 74313, +91 76784 51381',
-        address: 'North East Delhi, Delhi, India',
-        copyright: '© 2026 A3 Web & Software Services. All rights reserved.'
-      });
-      console.log('Successfully updated database settings to Delhi Office contact details.');
+    if (settings) {
+      console.log('Settings already exist. Skipping settings seed.');
     }
 
-    // Seed blogs if empty
+    // Seed blogs only if completely empty
     const blogs = await BlogModel.find({});
     if (blogs.length === 0) {
       await BlogModel.create({
@@ -83,9 +68,11 @@ const seedExtraData = async () => {
         author: 'A3 Administrator'
       });
       console.log('Seeded default blog article.');
+    } else {
+      console.log(`Found ${blogs.length} existing blog(s). Skipping blog seed.`);
     }
 
-    // Seed FAQs if empty
+    // Seed FAQs only if completely empty
     const faqs = await FaqModel.find({});
     if (faqs.length === 0) {
       await FaqModel.create({
@@ -99,6 +86,8 @@ const seedExtraData = async () => {
         displayOrder: 2
       });
       console.log('Seeded default FAQ items.');
+    } else {
+      console.log(`Found ${faqs.length} existing FAQ(s). Skipping FAQ seed.`);
     }
   } catch (error) {
     console.error('Error seeding extra CMS data:', error);
@@ -107,10 +96,10 @@ const seedExtraData = async () => {
 
 // Start-up routine
 const startServer = async () => {
-  // Initialize DB (MongoDB or Local JSON Database fallback)
+  // Initialize DB — MongoDB is REQUIRED (no JSON fallback)
   await connectDB();
 
-  // Seed default data if not present
+  // Seed default data ONLY if collections are empty (first-time setup)
   await seedAdmin();
   await seedServices();
   await seedProjects();

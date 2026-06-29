@@ -7,17 +7,12 @@ import nodemailer from 'nodemailer';
 const JWT_SECRET = process.env.JWT_SECRET || 'a3_agency_super_secret_key_12345';
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'a3_agency_refresh_secret_key_54321';
 
-// Seed default admin if no users exist
+// Seed default admin ONLY if no users exist at all (first-time setup)
 export const seedAdmin = async () => {
   try {
     const users = await UserModel.find({});
-    if (users.length < 3) {
-      console.log(`Found ${users.length} users. Ensuring all 3 roles (Super Admin, Admin, Editor) are seeded...`);
-      
-      // Clear out older seeding
-      for (const u of users) {
-        await UserModel.findByIdAndDelete(u.id || u._id);
-      }
+    if (users.length === 0) {
+      console.log('No users found. Seeding default admin accounts (first-time setup)...');
 
       // 1. Super Admin
       const hashSuper = await bcrypt.hash('superadminpassword123', 10);
@@ -47,6 +42,8 @@ export const seedAdmin = async () => {
       });
 
       console.log('Seeded default role credentials successfully.');
+    } else {
+      console.log(`Found ${users.length} existing user(s). Skipping admin seed.`);
     }
   } catch (error) {
     console.error('Error seeding default admins:', error);

@@ -1,6 +1,4 @@
 import { Schema, model } from 'mongoose';
-import { isMongoDBActive } from '../config/db';
-import { LocalRepo } from '../utils/localDb';
 
 export interface IProject {
   id?: string;
@@ -41,31 +39,11 @@ try {
   MongoProjectModel = model('Project');
 }
 
-const LocalProjectRepo = new LocalRepo<IProject>('projects');
-
 export const ProjectModel = {
-  find: async (query: any = {}) => {
-    if (isMongoDBActive()) return MongoProjectModel.find(query);
-    return LocalProjectRepo.find(query);
-  },
-  findOne: async (query: any) => {
-    if (isMongoDBActive()) return MongoProjectModel.findOne(query);
-    return LocalProjectRepo.findOne(query);
-  },
-  findById: async (id: string) => {
-    if (isMongoDBActive()) return MongoProjectModel.findById(id);
-    return LocalProjectRepo.findById(id);
-  },
-  create: async (data: any) => {
-    if (isMongoDBActive()) return MongoProjectModel.create(data);
-    return LocalProjectRepo.create(data);
-  },
-  findByIdAndUpdate: async (id: string, update: any) => {
-    if (isMongoDBActive()) return MongoProjectModel.findByIdAndUpdate(id, update, { new: true });
-    return LocalProjectRepo.findByIdAndUpdate(id, update);
-  },
-  findByIdAndDelete: async (id: string) => {
-    if (isMongoDBActive()) return MongoProjectModel.findByIdAndDelete(id);
-    return LocalProjectRepo.findByIdAndDelete(id);
-  }
+  find: async (query: any = {}) => MongoProjectModel.find(query),
+  findOne: async (query: any) => MongoProjectModel.findOne(query),
+  findById: async (id: string) => MongoProjectModel.findById(id),
+  create: async (data: any) => MongoProjectModel.create(data),
+  findByIdAndUpdate: async (id: string, update: any) => MongoProjectModel.findByIdAndUpdate(id, update, { new: true }),
+  findByIdAndDelete: async (id: string) => MongoProjectModel.findByIdAndDelete(id)
 };

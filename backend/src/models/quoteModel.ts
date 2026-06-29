@@ -1,6 +1,4 @@
 import { Schema, model } from 'mongoose';
-import { isMongoDBActive } from '../config/db';
-import { LocalRepo } from '../utils/localDb';
 
 export interface IQuote {
   id?: string;
@@ -35,31 +33,11 @@ try {
   MongoQuoteModel = model('Quote');
 }
 
-const LocalQuoteRepo = new LocalRepo<IQuote>('quotes');
-
 export const QuoteModel = {
-  find: async (query: any = {}) => {
-    if (isMongoDBActive()) return MongoQuoteModel.find(query);
-    return LocalQuoteRepo.find(query);
-  },
-  findOne: async (query: any) => {
-    if (isMongoDBActive()) return MongoQuoteModel.findOne(query);
-    return LocalQuoteRepo.findOne(query);
-  },
-  findById: async (id: string) => {
-    if (isMongoDBActive()) return MongoQuoteModel.findById(id);
-    return LocalQuoteRepo.findById(id);
-  },
-  create: async (data: any) => {
-    if (isMongoDBActive()) return MongoQuoteModel.create(data);
-    return LocalQuoteRepo.create(data);
-  },
-  findByIdAndUpdate: async (id: string, update: any) => {
-    if (isMongoDBActive()) return MongoQuoteModel.findByIdAndUpdate(id, update, { new: true });
-    return LocalQuoteRepo.findByIdAndUpdate(id, update);
-  },
-  findByIdAndDelete: async (id: string) => {
-    if (isMongoDBActive()) return MongoQuoteModel.findByIdAndDelete(id);
-    return LocalQuoteRepo.findByIdAndDelete(id);
-  }
+  find: async (query: any = {}) => MongoQuoteModel.find(query),
+  findOne: async (query: any) => MongoQuoteModel.findOne(query),
+  findById: async (id: string) => MongoQuoteModel.findById(id),
+  create: async (data: any) => MongoQuoteModel.create(data),
+  findByIdAndUpdate: async (id: string, update: any) => MongoQuoteModel.findByIdAndUpdate(id, update, { new: true }),
+  findByIdAndDelete: async (id: string) => MongoQuoteModel.findByIdAndDelete(id)
 };

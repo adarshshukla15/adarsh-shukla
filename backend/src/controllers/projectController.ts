@@ -1,11 +1,33 @@
 import { Request, Response } from 'express';
 import { ProjectModel } from '../models/projectModel';
-import { uploadToCloudinaryOrLocal } from './mediaController';
+import { v2 as cloudinary } from 'cloudinary';
+
+/**
+ * Upload a buffer directly to Cloudinary (no local file system usage).
+ */
+const uploadBufferToCloudinary = (buffer: Buffer): Promise<{ url: string; public_id: string }> => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { folder: 'a3_agency_cms', resource_type: 'image' },
+      (error, result) => {
+        if (error) {
+          return reject(error);
+        }
+        resolve({
+          url: result!.secure_url,
+          public_id: result!.public_id
+        });
+      }
+    );
+    uploadStream.end(buffer);
+  });
+};
 
 export const seedProjects = async () => {
   try {
     const count = await ProjectModel.find({});
     if (count.length === 0) {
+      console.log('No projects found. Seeding default projects (first-time setup)...');
       const defaultProjects = [
         {
           title: 'Quantum Analytics Dashboard',
@@ -58,6 +80,8 @@ export const seedProjects = async () => {
         await ProjectModel.create(project);
       }
       console.log('Seeded default projects database records.');
+    } else {
+      console.log(`Found ${count.length} existing project(s). Skipping projects seed.`);
     }
   } catch (error) {
     console.error('Error seeding projects:', error);
@@ -124,18 +148,18 @@ export const createProject = async (req: Request, res: Response) => {
       }
     }
 
-    // Process uploaded files if available
+    // Process uploaded files if available (memory buffer → Cloudinary)
     const files = req.files as { [fieldname: string]: Express.Multer.File[] } | undefined;
     if (files) {
       if (files.thumbnail && files.thumbnail.length > 0) {
-        const thumbUpload = await uploadToCloudinaryOrLocal(files.thumbnail[0].path, files.thumbnail[0].filename);
+        const thumbUpload = await uploadBufferToCloudinary(files.thumbnail[0].buffer);
         thumbnail = thumbUpload.url;
       }
       
       if (files.gallery && files.gallery.length > 0) {
         const galleryUrls: string[] = [];
         for (const file of files.gallery) {
-          const fileUpload = await uploadToCloudinaryOrLocal(file.path, file.filename);
+          const fileUpload = await uploadBufferToCloudinary(file.buffer);
           galleryUrls.push(fileUpload.url);
         }
         gallery = [...gallery, ...galleryUrls];
@@ -207,18 +231,18 @@ export const updateProject = async (req: Request, res: Response) => {
       }
     }
 
-    // Process uploaded files if available
+    // Process uploaded files if available (memory buffer → Cloudinary)
     const files = req.files as { [fieldname: string]: Express.Multer.File[] } | undefined;
     if (files) {
       if (files.thumbnail && files.thumbnail.length > 0) {
-        const thumbUpload = await uploadToCloudinaryOrLocal(files.thumbnail[0].path, files.thumbnail[0].filename);
+        const thumbUpload = await uploadBufferToCloudinary(files.thumbnail[0].buffer);
         thumbnail = thumbUpload.url;
       }
       
       if (files.gallery && files.gallery.length > 0) {
         const galleryUrls: string[] = [];
         for (const file of files.gallery) {
-          const fileUpload = await uploadToCloudinaryOrLocal(file.path, file.filename);
+          const fileUpload = await uploadBufferToCloudinary(file.buffer);
           galleryUrls.push(fileUpload.url);
         }
         gallery = [...gallery, ...galleryUrls];

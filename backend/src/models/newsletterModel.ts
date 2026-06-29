@@ -1,6 +1,4 @@
 import { Schema, model } from 'mongoose';
-import { isMongoDBActive } from '../config/db';
-import { LocalRepo } from '../utils/localDb';
 
 export interface INewsletter {
   id?: string;
@@ -23,31 +21,11 @@ try {
   MongoNewsletterModel = model('Newsletter');
 }
 
-const LocalNewsletterRepo = new LocalRepo<INewsletter>('newsletter');
-
 export const NewsletterModel = {
-  find: async (query: any = {}) => {
-    if (isMongoDBActive()) return MongoNewsletterModel.find(query);
-    return LocalNewsletterRepo.find(query);
-  },
-  findOne: async (query: any) => {
-    if (isMongoDBActive()) return MongoNewsletterModel.findOne(query);
-    return LocalNewsletterRepo.findOne(query);
-  },
-  findById: async (id: string) => {
-    if (isMongoDBActive()) return MongoNewsletterModel.findById(id);
-    return LocalNewsletterRepo.findById(id);
-  },
-  create: async (data: any) => {
-    if (isMongoDBActive()) return MongoNewsletterModel.create(data);
-    return LocalNewsletterRepo.create(data);
-  },
-  findByIdAndUpdate: async (id: string, update: any) => {
-    if (isMongoDBActive()) return MongoNewsletterModel.findByIdAndUpdate(id, update, { new: true });
-    return LocalNewsletterRepo.findByIdAndUpdate(id, update);
-  },
-  findByIdAndDelete: async (id: string) => {
-    if (isMongoDBActive()) return MongoNewsletterModel.findByIdAndDelete(id);
-    return LocalNewsletterRepo.findByIdAndDelete(id);
-  }
+  find: async (query: any = {}) => MongoNewsletterModel.find(query),
+  findOne: async (query: any) => MongoNewsletterModel.findOne(query),
+  findById: async (id: string) => MongoNewsletterModel.findById(id),
+  create: async (data: any) => MongoNewsletterModel.create(data),
+  findByIdAndUpdate: async (id: string, update: any) => MongoNewsletterModel.findByIdAndUpdate(id, update, { new: true }),
+  findByIdAndDelete: async (id: string) => MongoNewsletterModel.findByIdAndDelete(id)
 };

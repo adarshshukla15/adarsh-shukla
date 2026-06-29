@@ -1,6 +1,4 @@
 import { Schema, model } from 'mongoose';
-import { isMongoDBActive } from '../config/db';
-import { LocalRepo } from '../utils/localDb';
 
 export interface IUser {
   id?: string;
@@ -24,7 +22,6 @@ const UserSchema = new Schema<IUser>({
   resetPasswordExpires: { type: String }
 }, { timestamps: true });
 
-// We try to register the schema with mongoose
 let MongoUserModel: any;
 try {
   MongoUserModel = model<IUser>('User', UserSchema);
@@ -33,31 +30,11 @@ try {
   MongoUserModel = model('User');
 }
 
-const LocalUserRepo = new LocalRepo<IUser>('users');
-
 export const UserModel = {
-  find: async (query: any = {}) => {
-    if (isMongoDBActive()) return MongoUserModel.find(query);
-    return LocalUserRepo.find(query);
-  },
-  findOne: async (query: any) => {
-    if (isMongoDBActive()) return MongoUserModel.findOne(query);
-    return LocalUserRepo.findOne(query);
-  },
-  findById: async (id: string) => {
-    if (isMongoDBActive()) return MongoUserModel.findById(id);
-    return LocalUserRepo.findById(id);
-  },
-  create: async (data: any) => {
-    if (isMongoDBActive()) return MongoUserModel.create(data);
-    return LocalUserRepo.create(data);
-  },
-  findByIdAndUpdate: async (id: string, update: any) => {
-    if (isMongoDBActive()) return MongoUserModel.findByIdAndUpdate(id, update, { new: true });
-    return LocalUserRepo.findByIdAndUpdate(id, update);
-  },
-  findByIdAndDelete: async (id: string) => {
-    if (isMongoDBActive()) return MongoUserModel.findByIdAndDelete(id);
-    return LocalUserRepo.findByIdAndDelete(id);
-  }
+  find: async (query: any = {}) => MongoUserModel.find(query),
+  findOne: async (query: any) => MongoUserModel.findOne(query),
+  findById: async (id: string) => MongoUserModel.findById(id),
+  create: async (data: any) => MongoUserModel.create(data),
+  findByIdAndUpdate: async (id: string, update: any) => MongoUserModel.findByIdAndUpdate(id, update, { new: true }),
+  findByIdAndDelete: async (id: string) => MongoUserModel.findByIdAndDelete(id)
 };

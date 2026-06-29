@@ -1,6 +1,4 @@
 import { Schema, model } from 'mongoose';
-import { isMongoDBActive } from '../config/db';
-import { LocalRepo } from '../utils/localDb';
 
 export interface ISocial {
   linkedin?: string;
@@ -73,87 +71,19 @@ try {
   MongoSettingsModel = model('Settings');
 }
 
-const LocalSettingsRepo = new LocalRepo<ISettings>('settings');
-
 export const SettingsModel = {
   get: async (): Promise<ISettings> => {
-    if (isMongoDBActive()) {
-      let settings = await MongoSettingsModel.findOne({});
-      if (!settings) {
-        settings = await MongoSettingsModel.create({});
-      }
-      return settings;
+    let settings = await MongoSettingsModel.findOne({});
+    if (!settings) {
+      settings = await MongoSettingsModel.create({});
     }
-    
-    const settingsList = await LocalSettingsRepo.find({});
-    if (settingsList.length === 0) {
-      const defaultSettings = {
-        companyName: 'A3 Web & Software Services',
-        email: 'a3services.inn@gmail.com',
-        phone: '+91 78271 74313 (Aditya), +91 76784 51381 (Adarsh)',
-        whatsapp: '+91 78271 74313 (Aditya), +91 76784 51381 (Adarsh)',
-        address: 'North East Delhi, Delhi, India',
-        socialLinks: {
-          linkedin: 'https://linkedin.com',
-          github: 'https://github.com',
-          twitter: 'https://twitter.com',
-          facebook: '',
-          instagram: 'https://instagram.com'
-        },
-        heroText: 'Engineering Digital Experiences That Inspire.',
-        heroSubtitle: 'From websites to enterprise software, we design and develop scalable digital solutions that accelerate business growth.',
-        footerText: 'Premium digital solutions for scaling businesses.',
-        copyright: '© 2026 A3 Web & Software Services. All rights reserved.',
-        seo: {
-          metaTitle: 'A3 Web & Software Services | Premium Agency',
-          metaDescription: 'Design, develop, and scale modern web, mobile apps, and custom software systems.',
-          keywords: ['software agency', 'web development', 'custom software', 'react 19']
-        }
-      };
-      return LocalSettingsRepo.create(defaultSettings);
-    }
-    return settingsList[0];
+    return settings;
   },
   update: async (data: Partial<ISettings>): Promise<ISettings> => {
-    if (isMongoDBActive()) {
-      let settings = await MongoSettingsModel.findOne({});
-      if (!settings) {
-        settings = await MongoSettingsModel.create({});
-      }
-      return MongoSettingsModel.findByIdAndUpdate(settings._id, data, { new: true });
+    let settings = await MongoSettingsModel.findOne({});
+    if (!settings) {
+      settings = await MongoSettingsModel.create({});
     }
-    
-    const settingsList = await LocalSettingsRepo.find({});
-    let settingsId = '';
-    if (settingsList.length === 0) {
-      const defaultSettings = {
-        companyName: 'A3 Web & Software Services',
-        email: 'a3services.inn@gmail.com',
-        phone: '+91 78271 74313 (Aditya), +91 76784 51381 (Adarsh)',
-        whatsapp: '+91 78271 74313 (Aditya), +91 76784 51381 (Adarsh)',
-        address: 'North East Delhi, Delhi, India',
-        socialLinks: {
-          linkedin: 'https://linkedin.com',
-          github: 'https://github.com',
-          twitter: 'https://twitter.com',
-          facebook: '',
-          instagram: 'https://instagram.com'
-        },
-        heroText: 'Engineering Digital Experiences That Inspire.',
-        heroSubtitle: 'From websites to enterprise software, we design and develop scalable digital solutions that accelerate business growth.',
-        footerText: 'Premium digital solutions for scaling businesses.',
-        copyright: '© 2026 A3 Web & Software Services. All rights reserved.',
-        seo: {
-          metaTitle: 'A3 Web & Software Services | Premium Agency',
-          metaDescription: 'Design, develop, and scale modern web, mobile apps, and custom software systems.',
-          keywords: ['software agency', 'web development', 'custom software', 'react 19']
-        }
-      };
-      const created = await LocalSettingsRepo.create(defaultSettings);
-      settingsId = created.id || created._id || '';
-    } else {
-      settingsId = settingsList[0].id || settingsList[0]._id || '';
-    }
-    return (await LocalSettingsRepo.findByIdAndUpdate(settingsId, data)) as ISettings;
+    return MongoSettingsModel.findByIdAndUpdate(settings._id, data, { new: true });
   }
 };

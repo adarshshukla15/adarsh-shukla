@@ -1,6 +1,4 @@
 import { Schema, model } from 'mongoose';
-import { isMongoDBActive } from '../config/db';
-import { LocalRepo } from '../utils/localDb';
 
 export interface IContact {
   id?: string;
@@ -37,31 +35,11 @@ try {
   MongoContactModel = model('Contact');
 }
 
-const LocalContactRepo = new LocalRepo<IContact>('contacts');
-
 export const ContactModel = {
-  find: async (query: any = {}) => {
-    if (isMongoDBActive()) return MongoContactModel.find(query);
-    return LocalContactRepo.find(query);
-  },
-  findOne: async (query: any) => {
-    if (isMongoDBActive()) return MongoContactModel.findOne(query);
-    return LocalContactRepo.findOne(query);
-  },
-  findById: async (id: string) => {
-    if (isMongoDBActive()) return MongoContactModel.findById(id);
-    return LocalContactRepo.findById(id);
-  },
-  create: async (data: any) => {
-    if (isMongoDBActive()) return MongoContactModel.create(data);
-    return LocalContactRepo.create(data);
-  },
-  findByIdAndUpdate: async (id: string, update: any) => {
-    if (isMongoDBActive()) return MongoContactModel.findByIdAndUpdate(id, update, { new: true });
-    return LocalContactRepo.findByIdAndUpdate(id, update);
-  },
-  findByIdAndDelete: async (id: string) => {
-    if (isMongoDBActive()) return MongoContactModel.findByIdAndDelete(id);
-    return LocalContactRepo.findByIdAndDelete(id);
-  }
+  find: async (query: any = {}) => MongoContactModel.find(query),
+  findOne: async (query: any) => MongoContactModel.findOne(query),
+  findById: async (id: string) => MongoContactModel.findById(id),
+  create: async (data: any) => MongoContactModel.create(data),
+  findByIdAndUpdate: async (id: string, update: any) => MongoContactModel.findByIdAndUpdate(id, update, { new: true }),
+  findByIdAndDelete: async (id: string) => MongoContactModel.findByIdAndDelete(id)
 };

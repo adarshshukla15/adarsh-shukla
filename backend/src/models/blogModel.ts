@@ -1,6 +1,4 @@
 import { Schema, model } from 'mongoose';
-import { isMongoDBActive } from '../config/db';
-import { LocalRepo } from '../utils/localDb';
 
 export interface IBlog {
   id?: string;
@@ -39,31 +37,11 @@ try {
   MongoBlogModel = model('Blog');
 }
 
-const LocalBlogRepo = new LocalRepo<IBlog>('blogs');
-
 export const BlogModel = {
-  find: async (query: any = {}) => {
-    if (isMongoDBActive()) return MongoBlogModel.find(query).sort({ createdAt: -1 });
-    return (await LocalBlogRepo.find(query)).sort((a, b) => new Date(b.createdAt || '').getTime() - new Date(a.createdAt || '').getTime());
-  },
-  findOne: async (query: any) => {
-    if (isMongoDBActive()) return MongoBlogModel.findOne(query);
-    return LocalBlogRepo.findOne(query);
-  },
-  findById: async (id: string) => {
-    if (isMongoDBActive()) return MongoBlogModel.findById(id);
-    return LocalBlogRepo.findById(id);
-  },
-  create: async (data: any) => {
-    if (isMongoDBActive()) return MongoBlogModel.create(data);
-    return LocalBlogRepo.create(data);
-  },
-  findByIdAndUpdate: async (id: string, update: any) => {
-    if (isMongoDBActive()) return MongoBlogModel.findByIdAndUpdate(id, update, { new: true });
-    return LocalBlogRepo.findByIdAndUpdate(id, update);
-  },
-  findByIdAndDelete: async (id: string) => {
-    if (isMongoDBActive()) return MongoBlogModel.findByIdAndDelete(id);
-    return LocalBlogRepo.findByIdAndDelete(id);
-  }
+  find: async (query: any = {}) => MongoBlogModel.find(query).sort({ createdAt: -1 }),
+  findOne: async (query: any) => MongoBlogModel.findOne(query),
+  findById: async (id: string) => MongoBlogModel.findById(id),
+  create: async (data: any) => MongoBlogModel.create(data),
+  findByIdAndUpdate: async (id: string, update: any) => MongoBlogModel.findByIdAndUpdate(id, update, { new: true }),
+  findByIdAndDelete: async (id: string) => MongoBlogModel.findByIdAndDelete(id)
 };

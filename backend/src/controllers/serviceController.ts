@@ -3,13 +3,9 @@ import { ServiceModel } from '../models/serviceModel';
 
 export const seedServices = async () => {
   try {
-    const count = await ServiceModel.find({});
-    if (count.length < 12) {
-      console.log(`Found ${count.length} services. Re-seeding to ensure all 12 premium services are available...`);
-      // Clear out older seeding
-      for (const srv of count) {
-        await ServiceModel.findByIdAndDelete(srv.id || srv._id);
-      }
+    const existing = await ServiceModel.find({});
+    if (existing.length === 0) {
+      console.log('No services found. Seeding default services (first-time setup)...');
       const defaultServices = [
         {
           title: 'Website Development',
@@ -209,6 +205,8 @@ export const seedServices = async () => {
         await ServiceModel.create(service);
       }
       console.log('Seeded default services database records.');
+    } else {
+      console.log(`Found ${existing.length} existing service(s). Skipping services seed.`);
     }
   } catch (error) {
     console.error('Error seeding services:', error);
