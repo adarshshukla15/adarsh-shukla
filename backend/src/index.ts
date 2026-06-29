@@ -108,13 +108,24 @@ const startServer = async () => {
   // Initialize DB — MongoDB is REQUIRED (no JSON fallback)
   await connectDB();
 
-  // Seed default data ONLY if collections are empty (first-time setup)
+  // Seed default admin ONLY if no users exist at all (first-time setup / recovery check)
   await seedAdmin();
-  await seedServices();
-  await seedProjects();
-  await seedTestimonials();
-  await seedTeam();
-  await seedExtraData();
+
+  // Gate default content seeding to run only on first startup
+  const settings = await SettingsModel.get();
+  if (!settings.hasSeeded) {
+    console.log('[Startup] First-time database seeding initiated...');
+    await seedServices();
+    await seedProjects();
+    await seedTestimonials();
+    await seedTeam();
+    await seedExtraData();
+
+    await SettingsModel.update({ hasSeeded: true });
+    console.log('[Startup] First-time database seeding successfully completed and flag set.');
+  } else {
+    console.log('[Startup] Database already seeded. Skipping default content seeders.');
+  }
 
   // Create HTTP server wrapper for Socket.IO
   const server = http.createServer(app);

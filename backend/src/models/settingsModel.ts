@@ -34,6 +34,7 @@ export interface ISettings {
   favicon?: string;
   createdAt?: string;
   updatedAt?: string;
+  hasSeeded?: boolean;
 }
 
 const SettingsSchema = new Schema<ISettings>({
@@ -61,7 +62,8 @@ const SettingsSchema = new Schema<ISettings>({
   },
   googleAnalyticsId: { type: String, default: 'G-XXXXXXXXXX' },
   logo: { type: String, default: '' },
-  favicon: { type: String, default: '' }
+  favicon: { type: String, default: '' },
+  hasSeeded: { type: Boolean, default: false }
 }, { timestamps: true });
 
 let MongoSettingsModel: any;
